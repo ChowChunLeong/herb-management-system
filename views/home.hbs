@@ -1,0 +1,250 @@
+<script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+<link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
+<nav class="navbar navbar-expand-sm bg-light">
+    <a class="navbar-brand" href="">Admin</a>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" href="">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="">About</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="/admin/logout">Logout</a>        
+        </li>
+    </ul>
+</nav>
+<div style="margin: auto;" class="container">
+    <h1>herb Management System</h1>
+        <!--
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+        </div>-->
+    <div id="msg" role="alert">
+
+    </div>
+    <ul class="nav nav-tabs" role="tablist" style="margin-bottom: 1rem;">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#tabs-add-herb" role="tab">Add herb</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="link-manage-herb" data-toggle="tab" href="#tabs-manage-herb" role="tab">Manage herb</a>
+        </li>
+    </ul><!-- Tab panes -->
+    <div class="tab-content" >
+        <div class="tab-pane active" id="tabs-add-herb" role="tabpanel">
+            <div class="form-group">
+                <label for="bookname" class="text-info">Herb Name:</label><br>
+                <input type="text" name="herbname" id="addherbname" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="author_name" class="text-info">Herb Description:</label><br>
+                <textarea type="text" name="description" id="adddescription" class="form-control" rows="4"> </textarea>
+            </div>
+            <div class="form-group">
+                <label for="quantity" class="text-info">Quantity:</label><br>
+                <input type="number" name="quantity" id="addquantity" class="form-control">
+            </div>
+            <div class="form-group">
+                <button type="button" id="add_herb" class="btn btn-info btn-md">Submit </button>
+            </div>
+        </div>
+
+        <div class="tab-pane" id="tabs-manage-herb" role="tabpanel">
+            <table id="herb-table" class="table table-bordered mb-none">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Quantity</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!--
+                    {{#each herb}}
+                    <tr class="data-row">
+                        <td class="id">{{ id }}</td>
+                        <td class="name">{{ name }}</td>
+                        <td class="description">{{ description }}</td>
+                        <td class="quantity">{{ quantity }}</td>
+                        <td class="action">
+                            <button type="button" class="btn btn-primary edit-item" data-item-id="{{ id }}">Update</button>
+                        </td>
+
+                    </tr>
+                    {{/each}}-->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="edit-modal" tabindex="-1" role="dialog" aria-labelledby="edit-modal-label" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="edit-modal-label">Manage Herb</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="attachment-body-content">
+                <div class="card text-black bg-light mb-0">
+                    <div class="card-header">
+                        <h2 class="m-0">Edit</h2>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label" for="modal-code">Name: </label>
+                            <input type="text" id="modal-herb-name" class="form-control">
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label" for="modal-name">Description:</label>
+                            <textarea rows="4" type="text" id="modal-herb-description" class="form-control" > </textarea>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-md-3 control-label" for="modal-status">Quantity:</label>
+                            <input type="number" id="modal-quantity" class="form-control">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="edit-modal-submit" onclick="edit_modal_submit()">Done</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#herb-table').DataTable();
+
+        $(document).on('click', ".edit-item", function() {
+            $(this).addClass('edit-item-trigger-clicked'); 
+            var options = {
+            'backdrop': 'static'
+            };
+            $('#edit-modal').modal(options);
+        })
+
+        // on modal show
+        $('#edit-modal').on('show.bs.modal', function() {
+            var el = $(".edit-item-trigger-clicked"); 
+            var row = el.closest(".data-row");
+
+            // get the data
+            var code = el.data('item-id');
+            var name = row.children(".name").text();
+            var description = row.children(".description").text();
+            var quantity = row.children(".quantity").text();
+
+            // fill the data in the input fields
+            $("#modal-herb-name").val(name);
+            $("#modal-herb-description").val(description);
+            $("#modal-quantity").val(quantity);
+        })
+
+        // on modal hide
+        $('#edit-modal').on('hide.bs.modal', function() {
+            $('.edit-item-trigger-clicked').removeClass('edit-item-trigger-clicked');
+            $("#edit-form").trigger("reset");
+        });
+
+        $(document).on('click', ".delete-item", function() {
+            var id = $(this).data('item-id');
+            var data_row = $(this).closest('.data-row');
+            $.ajax({
+                type:'DELETE',
+                url:'/admin/delete/'+id,
+                data:{},
+                success:function(data) {
+                    data_row.remove();
+                    //class="alert alert-success alert-dismissible fade show"
+                    $('#msg').addClass("alert alert-success alert-dismissible fade show");
+                    $('#msg').text('Successfully herb deleted');
+                }
+            });        
+        });
+
+
+    });
+
+    $(document).on('click', "#add_herb", function() {
+        var name = $('#addherbname').val();
+        var description = $('#adddescription').val();
+        var quantity = $('#addquantity').val();
+        $.ajax({
+            type:'POST',
+            url:'/admin/addherb',
+            data:{name:name, description:description, quantity:quantity},
+            success:function(data) {
+                //class="alert alert-success alert-dismissible fade show"
+                $('#msg').addClass("alert alert-success alert-dismissible fade show");
+                $('#msg').text('Successfully herb added');
+            }
+        });
+    });
+
+    $(document).on('click', '#link-manage-herb', function(){
+        console.log('edit-amage-herb');
+        $.ajax({
+            type:'POST',
+            url:'/admin/retrieve_herb_list',
+            data:{},
+            success:function(data) {
+                $('#herb-table').dataTable().fnDestroy();
+
+                var table_list = '';
+                for (let i = 0; i < data.length; i++) {
+                    table_list +=`<tr class="data-row">
+                        <td class="id">`+data[i].id+`</td>
+                        <td class="name">`+data[i].name+`</td>
+                        <td class="description">`+data[i].description+`</td>
+                        <td class="quantity">`+data[i].quantity+`</td>
+                        <td class="action">
+                            <button type="button" class="btn btn-primary edit-item" data-item-id="`+data[i].id+`">Update</button>
+                            <button type="button" class="btn btn-danger delete-item" data-item-id="`+data[i].id+`">Delete</button>
+                        </td>
+                    </tr>`;
+                }
+                $('#herb-table tbody').empty();
+                $('#herb-table tbody').append(table_list);
+ 
+                $('#herb-table').DataTable();        
+            }
+        });
+    });
+
+    function edit_modal_submit(){
+        
+        var el = $(".edit-item-trigger-clicked"); 
+        var row = el.closest(".data-row");
+        var id = el.data('item-id');
+        console.log(id);
+        var name = $('#modal-herb-name').val();
+        var description = $("#modal-herb-description").val();
+        var quantity = $('#modal-quantity').val();
+        $.ajax({
+            type:'PATCH',
+            url:'/admin/editherb',
+            data:{id:id, name:name, description:description, quantity:quantity},
+            success:function(data) {
+                
+                row.children(".name").empty();
+                row.children(".name").append(name);
+
+                row.children(".description").empty();
+                row.children(".description").append(description);
+
+                row.children(".quantity").empty();
+                row.children(".quantity").append(quantity);
+                //close modal
+                $('#edit-modal').modal('hide');
+                $('.edit-item-trigger-clicked').removeClass('edit-item-trigger-clicked');
+                $("#edit-form").trigger("reset");
+            }
+        });
+    }
+</script>

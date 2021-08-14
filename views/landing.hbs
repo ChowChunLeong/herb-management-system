@@ -1,0 +1,30 @@
+<div id="login">
+    <div class="container" style="margin-top: 2rem;">
+        <div id="login-row" class="row justify-content-center align-items-center">
+            <div id="login-column" class="col-md-6">
+                <div id="login-box" class="col-md-12">
+                    {{#if alert}}
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{alert}}
+                        </div>
+                    {{/if}}
+                    <form id="login-form" class="form" action="/admin/login" method="post">
+                    
+                        <h3 class="text-center text-info">Admin</h3>
+                        <div class="form-group">
+                            <label for="username" class="text-info">admin name:</label><br>
+                            <input type="text" name="name" id="username" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="text-info">Password:</label><br>
+                            <input type="password" name="password" id="password" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-info btn-md">Submit </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
